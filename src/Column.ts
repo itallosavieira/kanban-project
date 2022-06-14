@@ -1,33 +1,36 @@
-import Card from "./Card"
+import Card from "./Card";
 
 export default class Column {
-  cards: Card[]
+  cards: Card[];
 
   constructor(readonly name: string, readonly hasEstimative: boolean) {
     this.cards = [];
   }
 
-  addCard(card: Card) {
+  addCard(card: Card, date: Date) {
+    card.addTransition(this.name, date);
     this.cards.push(card);
   }
 
   removeCard(card: Card) {
-    const indexOfCard = this.cards.indexOf(card);
-    this.cards.splice(indexOfCard, 1);
+    const filteredCards = this.cards.filter(item => item != card)
+    this.cards = filteredCards;
   }
 
   getCards() {
     return this.cards;
   }
 
-  getCard(name: string) {
-    const card = this.cards.find(car => car.title === name);
+  getCardByTitle(title: string) {
+    const card = this.cards.find(card => card.title === title);
     if (!card) throw new Error("Card does not exist");
     return card;
   }
 
-  getColumnEstimative() {
-    const estimative = this.cards.reduce((total: number, card: Card) => total += card.estimative, 0);
-    return estimative;
+  getEstimative() {
+    return this.cards.reduce((total: number, card: Card) => {
+      total += card.estiative;
+      return total
+    }, 0)
   }
-}
+} 

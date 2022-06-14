@@ -1,13 +1,4 @@
 import Board from "../src/Board"
-/*
-Deve criar um quadro - OK
-Deve incluir as colunas no quadro - OK
-Deve inserir cartões nas colunas do quadro - OK
-Deve calcular a estimativa de uma coluna - OK
-Deve trocar cartão de coluna - OK
----
-Deve armazenar o tempo do card em cada coluna
-*/
 
 test("Deve criar um quadro", () => {
   const board = new Board("Board-A");
@@ -27,11 +18,10 @@ test("Deve inserir cartões nas colunas do quadro", () => {
   board.addColumn("Todo", true);
   board.addColumn("Doing", true);
   board.addColumn("Done", false);
-  board.addCard("Todo", "Task 1", 3);
+  board.addCard("Todo", "Task 1", 4);
   board.addCard("Todo", "Task 2", 2);
-  board.addCard("Doing", "Task 3", 2);
-  expect(board.getColumn("Todo").getCards()).toHaveLength(2);
-  expect(board.getColumn("Doing").getCards()).toHaveLength(1);
+  board.addCard("Todo", "Task 3", 3);
+  expect(board.getColumnByName("Todo").getCards()).toHaveLength(3)
 })
 
 test("Deve calcular a estimativa de uma coluna", () => {
@@ -39,59 +29,35 @@ test("Deve calcular a estimativa de uma coluna", () => {
   board.addColumn("Todo", true);
   board.addColumn("Doing", true);
   board.addColumn("Done", false);
-  board.addCard("Todo", "Task 1", 3);
+  board.addCard("Todo", "Task 1", 4);
   board.addCard("Todo", "Task 2", 2);
-  board.addCard("Doing", "Task 3", 2);
-  board.addCard("Doing", "Task 4", 5);
-  expect(board.getColumn("Todo").getColumnEstimative()).toBe(5);
-  expect(board.getColumn("Doing").getColumnEstimative()).toBe(7);
-  expect(board.getColumn("Done").getColumnEstimative()).toBe(0);
+  board.addCard("Todo", "Task 3", 3);
+  expect(board.getColumnByName("Todo").getEstimative()).toBe(9)
 })
 
-test("Deve trocar cartão de coluna", () => {
+test("Deve trocar um cartão de coluna", () => {
   const board = new Board("Board-A");
   board.addColumn("Todo", true);
   board.addColumn("Doing", true);
   board.addColumn("Done", false);
-  board.addCard("Todo", "Task 1", 3);
+  board.addCard("Todo", "Task 1", 4);
   board.addCard("Todo", "Task 2", 2);
-  board.addCard("Doing", "Task 3", 2);
-  board.addCard("Doing", "Task 4", 5);
-  board.changeCardTo("Task 1", "Todo", "Doing");
-  board.changeCardTo("Task 2", "Todo", "Done");
-  expect(board.getColumn("Todo").getCards()).toHaveLength(0);
-  expect(board.getColumn("Doing").getCards()).toHaveLength(3);
-  expect(board.getColumn("Done").getCards()).toHaveLength(1);
+  board.addCard("Todo", "Task 3", 3);
+  board.moveCardToColumn("Task 1", "Todo", "Doing");
+  expect(board.getColumnByName("Todo").getEstimative()).toBe(5)
+  expect(board.getColumnByName("Doing").getEstimative()).toBe(4)
 })
 
-test("Deve trocar cartão de coluna", () => {
+test("Deve armazenar o tempo em cada coluna", () => {
   const board = new Board("Board-A");
   board.addColumn("Todo", true);
   board.addColumn("Doing", true);
   board.addColumn("Done", false);
-  board.addCard("Todo", "Task 1", 3);
-  board.addCard("Todo", "Task 2", 2);
-  board.addCard("Doing", "Task 3", 2);
-  board.addCard("Doing", "Task 4", 5);
-  board.changeCardTo("Task 1", "Todo", "Doing");
-  board.changeCardTo("Task 2", "Todo", "Done");
-  expect(board.getColumn("Todo").getCards()).toHaveLength(0);
-  expect(board.getColumn("Doing").getCards()).toHaveLength(3);
-  expect(board.getColumn("Done").getCards()).toHaveLength(1);
+  board.addCard("Todo", "Task 1", 4, new Date("2021-03-01T10:00:00"));
+  board.moveCardToColumn("Task 1", "Todo", "Doing", new Date("2021-03-10T10:00:00"));
+  const card = board.getColumnByName("Doing").getCardByTitle("Task 1");
+
+  expect(card.transitions[0].date).toEqual(new Date("2021-03-01T10:00:00"));
+  expect(card.transitions[1].date).toEqual(new Date("2021-03-10T10:00:00"));
 })
 
-test("Deve trocar cartão de coluna", () => {
-  const board = new Board("Board-A");
-  board.addColumn("Todo", true);
-  board.addColumn("Doing", true);
-  board.addColumn("Done", false);
-  board.addCard("Todo", "Task 1", 3);
-  board.addCard("Todo", "Task 2", 2);
-  board.addCard("Doing", "Task 3", 2);
-  board.addCard("Doing", "Task 4", 5);
-  board.changeCardTo("Task 1", "Todo", "Doing");
-  board.changeCardTo("Task 2", "Todo", "Done");
-  expect(board.getColumn("Todo").getCards()).toHaveLength(0);
-  expect(board.getColumn("Doing").getCards()).toHaveLength(3);
-  expect(board.getColumn("Done").getCards()).toHaveLength(1);
-})

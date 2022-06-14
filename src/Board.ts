@@ -1,5 +1,5 @@
-import Column from "./Column"
-import Card from "./Card"
+import Column from "./Column";
+import Card from "./Card";
 
 export default class Board {
   columns: Column[];
@@ -9,26 +9,26 @@ export default class Board {
   }
 
   addColumn(name: string, hasEstimative: boolean) {
-    this.columns.push(new Column(name, hasEstimative))
+    this.columns.push(new Column(name, hasEstimative));
   }
 
-  getColumn(name: string) {
-    const column = this.columns.find(col => col.name === name);
+  getColumnByName(name: string) {
+    const column = this.columns.find(column => column.name === name);
     if (!column) throw new Error("Column does not exist");
     return column;
   }
 
-  addCard(columnName: string, title: string, estimative: number) {
-    const column = this.getColumn(columnName);
-    column.addCard(new Card(title, estimative));
+  addCard(columnName: string, cardTitle: string, estimative: number, date: Date = new Date()) {
+    const column = this.getColumnByName(columnName);
+    column.addCard(new Card(cardTitle, estimative), date);
   }
 
-  changeCardTo(cardTitle: string, columnNameFrom: string, columnNameTo: string) {
-    const columnFrom = this.getColumn(columnNameFrom);
-    const columnTo = this.getColumn(columnNameTo);
-    const card = columnFrom.getCard(cardTitle);
+  moveCardToColumn(cardTitle: string, columnNameFrom: string, columnNameTo: string, date: Date = new Date()) {
+    const columnFrom = this.getColumnByName(columnNameFrom);
+    const columnTo = this.getColumnByName(columnNameTo);
+    const card = columnFrom.getCardByTitle(cardTitle);
 
-    columnTo.addCard(card);
+    columnTo.addCard(card, date);
     columnFrom.removeCard(card);
   }
 }
